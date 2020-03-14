@@ -9,7 +9,8 @@ import {
   CardContent,
   CardHeader,
   Avatar,
-  Chip
+  Chip,
+  Divider
 } from "@material-ui/core";
 
 import {
@@ -87,8 +88,9 @@ const RoundForm: React.FC<{
       <Typography>Punkte:</Typography>
       {players.map(player => (
         <TextField
+          variant="outlined"
           key={player}
-          label={player}
+          label={`Punkte von ${player}`}
           placeholder="Punkte"
           required
           fullWidth
@@ -118,22 +120,21 @@ const Game: React.FC<{
         ></CardHeader>
         <CardContent>
           <RoundForm onSubmit={addScore} players={state.players} />
-          <Box m={5}>
-            <Typography>Siegertreppchen</Typography>
-            <Box mt={2} display="flex" justifyContent="space-between">
-              {stats.leaderBoard.map((player, index) => (
-                <Chip
-                  color="primary"
-                  label={
-                    <>
-                      {player.name} {player.score}
-                    </>
-                  }
-                  avatar={<Avatar>{index + 1}</Avatar>}
-                />
-              ))}
+          <Divider style={{ margin: "2rem 0" }} />
+          <Typography>Siegertreppchen</Typography>
+          {stats.leaderBoard.map((player, index) => (
+            <Box mt={2}>
+              <Chip
+                color="primary"
+                label={
+                  <>
+                    {player.name} {player.score}
+                  </>
+                }
+                avatar={<Avatar>{index + 1}</Avatar>}
+              />
             </Box>
-          </Box>
+          ))}
         </CardContent>
       </Card>
     </>
@@ -155,11 +156,18 @@ const PlayersForm: React.FC<{
             (_, index) => e.target[`playerName${index + 1}`].value
           )
           .filter(name => name.length);
-        onSubmit(playerNames);
+        //@ts-ignore
+        const duplicates = [...new Set(playerNames)];
+        if (duplicates.length !== playerNames.length) {
+          alert("Jeder spieler sollte einen eindeutigen namen haben ;)");
+        } else {
+          onSubmit(playerNames);
+        }
       }}
     >
       {maybePlayers.map((_, index) => (
         <TextField
+          variant="outlined"
           required={index < 3}
           key={index}
           autoComplete="off"
