@@ -25,7 +25,7 @@ export const wizardReducer = (state: State, action: WizardActions) => {
     case "SetWants":
       return {
         ...state,
-        wants: [...state.rounds, action.wants]
+        wants: [...state.wants, action.wants]
       };
     case "SetPlayers":
       return {

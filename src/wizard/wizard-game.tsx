@@ -244,7 +244,40 @@ const Game: React.FC<{
           </TableContainer>
         </CardContent>
       </Card>
+
+      <Card style={{ marginTop: "3rem" }}>
+        <ExtendedResult state={state} />
+      </Card>
     </>
+  );
+};
+
+const ExtendedResult: React.FC<{ state: State }> = ({ state }) => {
+  return (
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell></TableCell>
+            {state.players.map(name => (
+              <TableCell key={`head-${name}`}>{name}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {state.rounds.map((row, index) => (
+            <TableRow key={`row-${index}`}>
+              <TableCell>{index}</TableCell>
+              {state.players.map((name, userIndex) => (
+                <TableCell key={`cell=${index}-${userIndex}`}>
+                  {row[userIndex]} | {state.wants[index][userIndex]}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
