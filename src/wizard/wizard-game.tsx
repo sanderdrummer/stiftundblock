@@ -8,9 +8,13 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Avatar,
-  Chip,
-  Divider
+  Divider,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
 } from "@material-ui/core";
 
 import {
@@ -41,7 +45,7 @@ export const WizardPage = () => {
 
   return (
     <>
-      <Box mt={3}>
+      <Box mt={3} mb={3}>
         <Typography>WIZARD</Typography>
       </Box>
       {playerCount === 0 ? (
@@ -54,17 +58,19 @@ export const WizardPage = () => {
           state={state}
         />
       )}
-      <Box mt={6}>
-        <Button
-          onClick={() =>
-            dispatch({ type: "Reset", state: { players: [], rounds: [] } })
-          }
-          variant="contained"
-          color="primary"
-        >
-          neues spiel
-        </Button>
-      </Box>
+      {state.players.length > 0 && (
+        <Box mt={6}>
+          <Button
+            onClick={() =>
+              dispatch({ type: "Reset", state: { players: [], rounds: [] } })
+            }
+            variant="contained"
+            color="primary"
+          >
+            neues spiel
+          </Button>
+        </Box>
+      )}
     </>
   );
 };
@@ -95,12 +101,13 @@ const RoundForm: React.FC<{
           required
           fullWidth
           margin="normal"
-          type="number"
+          type="tel"
           name={player}
+          inputProps={{ pattern: "-?[0-9]*" }}
         />
       ))}
       <Button variant="contained" type="submit">
-        nächste runde
+        punkte speichern
       </Button>
     </form>
   );
@@ -111,30 +118,47 @@ const Game: React.FC<{
   addScore: (scores: number[]) => void;
 }> = ({ state, addScore }) => {
   const stats = getGameStats(state);
+  const getSubHeaderText = () => {
+    if (stats.cardAmount === 1) {
+      return `${stats.cardAmount} Karte wird verteilt - Es gibt ${stats.dealer}`;
+    } else {
+      return `${stats.cardAmount} Karten werden verteilt - Es gibt ${stats.dealer}`;
+    }
+  };
   return (
     <>
       <Card>
         <CardHeader
           title={`Runde ${stats.cardAmount} von ${stats.rounds}`}
-          subheader={`${stats.cardAmount} Karten werden verteilt Es gibt ${stats.dealer}`}
+          subheader={getSubHeaderText()}
         ></CardHeader>
         <CardContent>
           <RoundForm onSubmit={addScore} players={state.players} />
           <Divider style={{ margin: "2rem 0" }} />
-          <Typography>Siegertreppchen</Typography>
-          {stats.leaderBoard.map((player, index) => (
-            <Box mt={2}>
-              <Chip
-                color="primary"
-                label={
-                  <>
-                    {player.name} {player.score}
-                  </>
-                }
-                avatar={<Avatar>{index + 1}</Avatar>}
-              />
-            </Box>
-          ))}
+          <Typography>Wertung</Typography>
+
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Platz</TableCell>
+                  <TableCell align="right">Name</TableCell>
+                  <TableCell align="right">Punkte</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {stats.leaderBoard.map((row, index) => (
+                  <TableRow key={row.name}>
+                    <TableCell component="th" scope="row">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell align="right">{row.name}</TableCell>
+                    <TableCell align="right">{row.score}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </CardContent>
       </Card>
     </>
