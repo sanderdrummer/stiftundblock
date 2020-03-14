@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/stiftundblock/static/css/main.5ecd60fb.chunk.css",
-    "main.js": "/stiftundblock/static/js/main.04208bf0.chunk.js",
-    "main.js.map": "/stiftundblock/static/js/main.04208bf0.chunk.js.map",
+    "main.js": "/stiftundblock/static/js/main.a2b1c4d8.chunk.js",
+    "main.js.map": "/stiftundblock/static/js/main.a2b1c4d8.chunk.js.map",
     "runtime-main.js": "/stiftundblock/static/js/runtime-main.3a474a03.js",
     "runtime-main.js.map": "/stiftundblock/static/js/runtime-main.3a474a03.js.map",
     "static/js/2.f5be3957.chunk.js": "/stiftundblock/static/js/2.f5be3957.chunk.js",
     "static/js/2.f5be3957.chunk.js.map": "/stiftundblock/static/js/2.f5be3957.chunk.js.map",
     "index.html": "/stiftundblock/index.html",
-    "precache-manifest.7432d81c2eb353cfe12ba14c28f80bcf.js": "/stiftundblock/precache-manifest.7432d81c2eb353cfe12ba14c28f80bcf.js",
+    "precache-manifest.8f51cd9906f26855006f8d409cc62c9f.js": "/stiftundblock/precache-manifest.8f51cd9906f26855006f8d409cc62c9f.js",
     "service-worker.js": "/stiftundblock/service-worker.js",
     "static/css/main.5ecd60fb.chunk.css.map": "/stiftundblock/static/css/main.5ecd60fb.chunk.css.map",
     "static/js/2.f5be3957.chunk.js.LICENSE.txt": "/stiftundblock/static/js/2.f5be3957.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.3a474a03.js",
     "static/js/2.f5be3957.chunk.js",
     "static/css/main.5ecd60fb.chunk.css",
-    "static/js/main.04208bf0.chunk.js"
+    "static/js/main.a2b1c4d8.chunk.js"
   ]
 }
