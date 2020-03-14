@@ -97,11 +97,9 @@ const RoundForm: React.FC<{
           name={player}
         />
       ))}
-      <Card>
-        <Button variant="contained" type="submit">
-          nächste runde
-        </Button>
-      </Card>
+      <Button variant="contained" type="submit">
+        nächste runde
+      </Button>
     </form>
   );
 };
