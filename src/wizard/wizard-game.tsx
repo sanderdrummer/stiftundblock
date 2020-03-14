@@ -189,7 +189,6 @@ const Game: React.FC<{
   addWants: (wants: number[]) => void;
 }> = ({ state, addScore, addWants }) => {
   const stats = getGameStats(state);
-  const roundCopy = `Runde ${stats.cardAmount} von ${stats.rounds}`;
   const getSubHeaderText = () => {
     if (stats.cardAmount === 1) {
       return `${stats.cardAmount} Karte wird verteilt - Es gibt ${stats.dealer}`;
@@ -202,7 +201,7 @@ const Game: React.FC<{
     <>
       <Card>
         <CardHeader
-          title={roundCopy}
+          title={`Runde ${stats.cardAmount} von ${stats.rounds}`}
           subheader={getSubHeaderText()}
         ></CardHeader>
         <CardContent>
@@ -217,8 +216,9 @@ const Game: React.FC<{
             <WantForm onSubmit={addWants} players={state.players} />
           )}
           <Divider style={{ margin: "2rem 0" }} />
-          <Typography>Wertung</Typography>
-          <Typography>{roundCopy}</Typography>
+          <Typography>
+            Wertung für Runde {stats.cardAmount - 1} von {stats.rounds}
+          </Typography>
 
           <TableContainer>
             <Table>
@@ -260,16 +260,18 @@ const ExtendedResult: React.FC<{ state: State }> = ({ state }) => {
           <TableRow>
             <TableCell></TableCell>
             {state.players.map(name => (
-              <TableCell key={`head-${name}`}>{name}</TableCell>
+              <TableCell align="right" key={`head-${name}`}>
+                {name}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
           {state.rounds.map((row, index) => (
             <TableRow key={`row-${index}`}>
-              <TableCell>{index}</TableCell>
+              <TableCell>{index + 1}</TableCell>
               {state.players.map((name, userIndex) => (
-                <TableCell key={`cell=${index}-${userIndex}`}>
+                <TableCell align="right" key={`cell=${index}-${userIndex}`}>
                   {row[userIndex]} | {state.wants[index][userIndex]}
                 </TableCell>
               ))}
