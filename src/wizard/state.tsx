@@ -63,7 +63,7 @@ export const getGameStats = (state: State) => {
   const leaderBoard = players
     .map(mapPlayerFunction)
     .sort((a, b) => b.score - a.score);
-  const dealerIndex = cardAmount % playerCount;
+  const dealerIndex = (cardAmount - 1) % playerCount;
   const dealer = players[dealerIndex];
 
   return {
