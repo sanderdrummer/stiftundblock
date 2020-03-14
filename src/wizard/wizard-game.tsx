@@ -89,9 +89,10 @@ const RoundForm: React.FC<{
         );
         onSubmit(scores);
         e.currentTarget.reset();
+        window.scrollTo(0, 0);
       }}
     >
-      <Typography>Punkte:</Typography>
+      <Typography>Punkte runde:</Typography>
       {players.map(player => (
         <TextField
           variant="outlined"
@@ -118,6 +119,7 @@ const Game: React.FC<{
   addScore: (scores: number[]) => void;
 }> = ({ state, addScore }) => {
   const stats = getGameStats(state);
+  const roundCopy = `Runde ${stats.cardAmount} von ${stats.rounds}`;
   const getSubHeaderText = () => {
     if (stats.cardAmount === 1) {
       return `${stats.cardAmount} Karte wird verteilt - Es gibt ${stats.dealer}`;
@@ -129,13 +131,14 @@ const Game: React.FC<{
     <>
       <Card>
         <CardHeader
-          title={`Runde ${stats.cardAmount} von ${stats.rounds}`}
+          title={roundCopy}
           subheader={getSubHeaderText()}
         ></CardHeader>
         <CardContent>
           <RoundForm onSubmit={addScore} players={state.players} />
           <Divider style={{ margin: "2rem 0" }} />
           <Typography>Wertung</Typography>
+          <Typography>{roundCopy}</Typography>
 
           <TableContainer>
             <Table>
