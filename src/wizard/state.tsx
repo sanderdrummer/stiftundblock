@@ -6,11 +6,13 @@ export type Score = number[];
 export type State = {
   players: Players;
   rounds: Score[];
+  wants: Score[];
 };
 
 export type WizardActions =
   | { type: "SetPlayers"; payload: string[] }
   | { type: "NextRound"; scores: number[] }
+  | { type: "SetWants"; wants: number[] }
   | { type: "Reset"; state: State };
 
 export const wizardReducer = (state: State, action: WizardActions) => {
@@ -19,6 +21,11 @@ export const wizardReducer = (state: State, action: WizardActions) => {
       return {
         ...state,
         rounds: [...state.rounds, action.scores]
+      };
+    case "SetWants":
+      return {
+        ...state,
+        wants: [...state.rounds, action.wants]
       };
     case "SetPlayers":
       return {
@@ -35,7 +42,8 @@ export const wizardReducer = (state: State, action: WizardActions) => {
 export const useWizardState = () => {
   return useReducer(wizardReducer, {
     players: [],
-    rounds: []
+    rounds: [],
+    wants: []
   });
 };
 

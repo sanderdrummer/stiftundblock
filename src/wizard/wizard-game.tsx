@@ -14,7 +14,8 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableBody
+  TableBody,
+  Avatar
 } from "@material-ui/core";
 
 import {
@@ -55,6 +56,7 @@ export const WizardPage = () => {
       ) : (
         <Game
           addScore={scores => dispatch({ type: "NextRound", scores })}
+          addWants={wants => dispatch({ type: "SetWants", wants })}
           state={state}
         />
       )}
@@ -62,7 +64,10 @@ export const WizardPage = () => {
         <Box mt={6}>
           <Button
             onClick={() =>
-              dispatch({ type: "Reset", state: { players: [], rounds: [] } })
+              dispatch({
+                type: "Reset",
+                state: { players: [], rounds: [], wants: [] }
+              })
             }
             variant="contained"
             color="primary"
@@ -78,34 +83,59 @@ export const WizardPage = () => {
 const RoundForm: React.FC<{
   onSubmit: (scores: number[]) => void;
   players: Players;
-}> = ({ players, onSubmit }) => {
+  wants: number[];
+  round: number;
+}> = ({ players, onSubmit, wants, round }) => {
   return (
     <form
       autoComplete="off"
       onSubmit={e => {
         e.preventDefault();
-        const scores: number[] = players.map(player =>
+        const haves: number[] = players.map(player =>
           Number(e.currentTarget[player].value)
         );
+        const validateRounds = haves.reduce((acc, have) => acc + have, 0);
+        if (validateRounds !== round) {
+          alert(
+            "Oh oh die Anzahl aller Stiche passt nicht zur aktuellen Kartenanzahl :("
+          );
+          return;
+        }
+        const scores = haves.map((have, index) => {
+          const want = wants[index];
+          const result = want - have;
+          if (result === 0) {
+            return 20 + have * 10;
+          } else {
+            return Math.abs(10 * result) * -1;
+          }
+        });
         onSubmit(scores);
         e.currentTarget.reset();
         window.scrollTo(0, 0);
       }}
     >
-      <Typography>Punkte runde:</Typography>
-      {players.map(player => (
-        <TextField
-          variant="outlined"
+      <Typography>Rundenwertung:</Typography>
+      {players.map((player, index) => (
+        <Box
+          display="flex"
+          alignContent="center"
+          alignItems="center"
           key={player}
-          label={`Punkte von ${player}`}
-          placeholder="Punkte"
-          required
-          fullWidth
-          margin="normal"
-          type="tel"
-          name={player}
-          inputProps={{ pattern: "-?[0-9]*" }}
-        />
+        >
+          <Avatar style={{ marginRight: "1rem" }}>{wants[index]}</Avatar>
+          <TextField
+            variant="outlined"
+            label={`Stiche von ${player}`}
+            placeholder="tatsächliche Stiche"
+            required
+            fullWidth
+            margin="normal"
+            type="tel"
+            name={player}
+            inputProps={{ pattern: "[0-9]*" }}
+          />
+        </Box>
       ))}
       <Button variant="contained" type="submit">
         punkte speichern
@@ -114,10 +144,50 @@ const RoundForm: React.FC<{
   );
 };
 
+const WantForm: React.FC<{
+  onSubmit: (wants: number[]) => void;
+  players: Players;
+}> = ({ players, onSubmit }) => {
+  return (
+    <form
+      autoComplete="off"
+      onSubmit={e => {
+        e.preventDefault();
+        const wants: number[] = players.map(player =>
+          Number(e.currentTarget[player].value)
+        );
+        onSubmit(wants);
+        e.currentTarget.reset();
+        window.scrollTo(0, 0);
+      }}
+    >
+      <Typography>Stiche Ansagen:</Typography>
+      {players.map(player => (
+        <TextField
+          variant="outlined"
+          key={player}
+          label={`Ansage von ${player}`}
+          placeholder="x stiche"
+          required
+          fullWidth
+          margin="normal"
+          type="tel"
+          name={player}
+          inputProps={{ pattern: "[0-9]*" }}
+        />
+      ))}
+      <Button variant="contained" type="submit">
+        Ansage speichern
+      </Button>
+    </form>
+  );
+};
+
 const Game: React.FC<{
   state: State;
   addScore: (scores: number[]) => void;
-}> = ({ state, addScore }) => {
+  addWants: (wants: number[]) => void;
+}> = ({ state, addScore, addWants }) => {
   const stats = getGameStats(state);
   const roundCopy = `Runde ${stats.cardAmount} von ${stats.rounds}`;
   const getSubHeaderText = () => {
@@ -127,6 +197,7 @@ const Game: React.FC<{
       return `${stats.cardAmount} Karten werden verteilt - Es gibt ${stats.dealer}`;
     }
   };
+  const wants = state.wants[stats.cardAmount - 1];
   return (
     <>
       <Card>
@@ -135,7 +206,16 @@ const Game: React.FC<{
           subheader={getSubHeaderText()}
         ></CardHeader>
         <CardContent>
-          <RoundForm onSubmit={addScore} players={state.players} />
+          {wants ? (
+            <RoundForm
+              round={stats.cardAmount}
+              wants={wants}
+              onSubmit={addScore}
+              players={state.players}
+            />
+          ) : (
+            <WantForm onSubmit={addWants} players={state.players} />
+          )}
           <Divider style={{ margin: "2rem 0" }} />
           <Typography>Wertung</Typography>
           <Typography>{roundCopy}</Typography>
