@@ -196,7 +196,7 @@ const Game: React.FC<{
       return `${stats.cardAmount} Karten werden verteilt - Es gibt ${stats.dealer}`;
     }
   };
-  const wants = state.wants[stats.cardAmount - 1];
+  const wants = state?.wants[stats?.cardAmount - 1] || 0;
   return (
     <>
       <Card>
@@ -290,6 +290,7 @@ const PlayersForm: React.FC<{
   const maybePlayers = Array(count).fill("");
   return (
     <form
+      autoComplete="off"
       onSubmit={e => {
         e.preventDefault();
         const playerNames = maybePlayers
@@ -312,7 +313,6 @@ const PlayersForm: React.FC<{
           variant="outlined"
           required={index < 3}
           key={index}
-          autoComplete="off"
           label={`Spieler ${index + 1}`}
           name={`playerName${index + 1}`}
           placeholder="Name"
