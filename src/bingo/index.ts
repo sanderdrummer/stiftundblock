@@ -1,0 +1,1 @@
+export { BingoBlock } from "./bingo";

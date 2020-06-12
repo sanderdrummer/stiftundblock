@@ -15,7 +15,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Avatar
+  Avatar,
 } from "@material-ui/core";
 
 import {
@@ -23,7 +23,7 @@ import {
   getPlayerCount,
   getGameStats,
   State,
-  Players
+  Players,
 } from "./state";
 
 const KEY = "WIZARD";
@@ -51,12 +51,12 @@ export const WizardPage = () => {
       </Box>
       {playerCount === 0 ? (
         <PlayersForm
-          onSubmit={names => dispatch({ type: "SetPlayers", payload: names })}
+          onSubmit={(names) => dispatch({ type: "SetPlayers", payload: names })}
         />
       ) : (
         <Game
-          addScore={scores => dispatch({ type: "NextRound", scores })}
-          addWants={wants => dispatch({ type: "SetWants", wants })}
+          addScore={(scores) => dispatch({ type: "NextRound", scores })}
+          addWants={(wants) => dispatch({ type: "SetWants", wants })}
           state={state}
         />
       )}
@@ -66,7 +66,7 @@ export const WizardPage = () => {
             onClick={() =>
               dispatch({
                 type: "Reset",
-                state: { players: [], rounds: [], wants: [] }
+                state: { players: [], rounds: [], wants: [] },
               })
             }
             variant="contained"
@@ -89,9 +89,9 @@ const RoundForm: React.FC<{
   return (
     <form
       autoComplete="off"
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.preventDefault();
-        const haves: number[] = players.map(player =>
+        const haves: number[] = players.map((player) =>
           Number(e.currentTarget[player].value)
         );
         const validateRounds = haves.reduce((acc, have) => acc + have, 0);
@@ -151,9 +151,9 @@ const WantForm: React.FC<{
   return (
     <form
       autoComplete="off"
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.preventDefault();
-        const wants: number[] = players.map(player =>
+        const wants: number[] = players.map((player) =>
           Number(e.currentTarget[player].value)
         );
         onSubmit(wants);
@@ -162,7 +162,7 @@ const WantForm: React.FC<{
       }}
     >
       <Typography>Stiche Ansagen:</Typography>
-      {players.map(player => (
+      {players.map((player) => (
         <TextField
           variant="outlined"
           key={player}
@@ -259,7 +259,7 @@ const ExtendedResult: React.FC<{ state: State }> = ({ state }) => {
         <TableHead>
           <TableRow>
             <TableCell></TableCell>
-            {state.players.map(name => (
+            {state.players.map((name) => (
               <TableCell align="right" key={`head-${name}`}>
                 {name}
               </TableCell>
@@ -291,14 +291,14 @@ const PlayersForm: React.FC<{
   return (
     <form
       autoComplete="off"
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.preventDefault();
         const playerNames = maybePlayers
           .map(
             //@ts-ignore
             (_, index) => e.target[`playerName${index + 1}`].value
           )
-          .filter(name => name.length);
+          .filter((name) => name.length);
         //@ts-ignore
         const duplicates = [...new Set(playerNames)];
         if (duplicates.length !== playerNames.length) {
