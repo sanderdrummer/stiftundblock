@@ -1,40 +1,32 @@
 import React from "react";
-import { WizardPage } from "./wizard/wizard-game";
 import {
   AppBar,
-  Typography,
   Container,
-  useMediaQuery,
   createMuiTheme,
   ThemeProvider,
-  CssBaseline
+  CssBaseline,
 } from "@material-ui/core";
 
-function App() {
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+import { Layout } from "./Pages";
 
-  const theme = React.useMemo(
-    () =>
-      createMuiTheme({
-        palette: {
-          type: prefersDarkMode ? "dark" : "light"
-        }
-      }),
-    [prefersDarkMode]
-  );
+const theme = createMuiTheme({
+  palette: {
+    type: "dark",
+  },
+});
+
+function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div>
-        <AppBar position="static">
-          <Typography variant="h6">STIFT UND BLOCK</Typography>
-        </AppBar>
+        <AppBar position="static">STIFT UND BLOCK</AppBar>
         <Container>
-          <WizardPage />
+          <Layout />
         </Container>
       </div>
     </ThemeProvider>
-  );
+ );
 }
 
 export default App;
