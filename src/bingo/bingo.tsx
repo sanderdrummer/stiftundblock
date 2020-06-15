@@ -1,4 +1,5 @@
 import React from "react";
+import * as firebase from "firebase";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -9,7 +10,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
-import { bingoRef } from "./firebase";
+
 const bingoSheetOptions = {
   B: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
   I: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
@@ -22,6 +23,93 @@ function randomIntFromInterval(min: number, max: number) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+const getPrefix = (value: number) => {
+  if (value > 15 && value < 31) return "I";
+  if (value > 30 && value < 46) return "N";
+  if (value > 45 && value < 61) return "G";
+  if (value > 60 && value < 76) return "O";
+  return "B";
+};
+const getInitialValues = () => {
+  let number = 1;
+  const values = [];
+  while (number < 76) {
+    values.push(`${getPrefix(number)}${number}`);
+    number++;
+  }
+  return values;
+};
+
+const DrawNumber = () => {
+  const database = firebase.database().ref();
+  const bingoRef = database.child("bingo-state");
+  const [options, setOptions] = React.useState(getInitialValues());
+  const [drawnNumber, setDrawnNumber] = React.useState();
+  const [drawn, setDrawn] = React.useState<number[]>([]);
+  const drawNumber = () => {
+    const index = randomIntFromInterval(0, options.length);
+    const nextNumber = options[index];
+    const nextDrawn = [...drawn, options[index]];
+    const nextOptions = options.filter((_, i) => i !== index);
+    console.log({
+      nextNumber,
+      nextDrawn,
+      nextOptions,
+    });
+    bingoRef.set({
+      drawnNumber: nextNumber,
+      drawn: nextDrawn,
+      options: nextOptions,
+    });
+  };
+
+  React.useEffect(() => {
+    bingoRef.on("value", (snapshot) => {
+      if (snapshot.val()) {
+        const {
+          options = getInitialValues(),
+          drawn = [],
+          drawnNumber,
+        }: any = snapshot.val();
+        setOptions(options);
+        setDrawnNumber(drawnNumber);
+        setDrawn(drawn);
+      } else {
+        setOptions(getInitialValues());
+        setDrawnNumber(undefined);
+        setDrawn([]);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div>
+      <Button onClick={drawNumber}>NEUE NUMMER ZIEHEN!</Button>
+      <Box m={2}>Aktueller Zug: {drawnNumber}</Box>
+      <Box display="flex" flexWrap="wrap">
+        {drawn.sort().map((number) => {
+          return (
+            <Box border={1} m={2} p={2} key={number}>
+              {number}
+            </Box>
+          );
+        })}
+      </Box>
+
+      <Box mt={6}>
+        <Button
+          onClick={() => {
+            bingoRef.set({});
+          }}
+        >
+          Spiel Beenden
+        </Button>
+      </Box>
+    </div>
+  );
+};
 
 const createBingoSheet = () => {
   return Object.keys(bingoSheetOptions).reduce((sheet, letter: any) => {
@@ -308,7 +396,12 @@ export const BingoBlock = () => {
 
         <Paper>
           <Box mt={4}>
-            <Button onClick={recreate}>NEUES SPIEL</Button>
+            <Button onClick={recreate}>NEUER BLOCK</Button>
+          </Box>
+        </Paper>
+        <Paper>
+          <Box mt={4}>
+            <DrawNumber />
           </Box>
         </Paper>
       </>

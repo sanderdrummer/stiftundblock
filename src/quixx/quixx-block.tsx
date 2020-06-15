@@ -1,17 +1,10 @@
 import React from "react";
-import {
-  Box,
-  Card,
-  CardHeader,
-  CardContent,
-  Divider,
-  Button,
-} from "@material-ui/core";
+import { Box, Card, CardHeader, CardContent, Button } from "@material-ui/core";
 import { initialFields, defaultGameDeck } from "./game-data";
 import { LockOpen, Lock } from "@material-ui/icons";
 import { RollDice } from "./quixx-dice";
 
-const fieldsReducer = (state, action) => {
+const fieldsReducer = (state: any, action: any) => {
   switch (action.type) {
     case "syncState":
       return {
@@ -30,7 +23,7 @@ const fieldsReducer = (state, action) => {
   }
 };
 
-const CheckMark = ({ checked, children }) => {
+const CheckMark: React.FC<any> = ({ checked, children }) => {
   return (
     <Box
       display="flex"
@@ -49,7 +42,7 @@ const CheckMark = ({ checked, children }) => {
   );
 };
 
-const GameCell = ({ cell, ...props }) => {
+const GameCell: React.FC<any> = ({ cell, ...props }) => {
   return (
     <Box
       {...props}
