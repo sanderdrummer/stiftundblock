@@ -1,7 +1,6 @@
 import React from "react";
 import * as firebase from "firebase";
 import {
-  AppBar,
   Container,
   createMuiTheme,
   ThemeProvider,
@@ -33,7 +32,6 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div>
-        <AppBar position="static">STIFT UND BLOCK</AppBar>
         <Container>
           <Layout />
         </Container>
