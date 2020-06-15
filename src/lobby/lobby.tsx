@@ -9,11 +9,6 @@ import {
   CardContent,
 } from "@material-ui/core";
 
-type GameLobbyState = {
-  type: "quixx" | "bingo" | "wizard";
-  players: string[];
-};
-
 export const GameLobby: React.FC<any> = ({ children, type }) => {
   return (
     <div>
@@ -22,6 +17,7 @@ export const GameLobby: React.FC<any> = ({ children, type }) => {
     </div>
   );
 };
+const PLAYER = "STIFTBLOCKPLAYER";
 const usePlayers = (type = "") => {
   const database = firebase.database().ref();
   const playerRef = database.child(`${type}/players`);
@@ -53,6 +49,12 @@ const usePlayers = (type = "") => {
 const Players = ({ type }) => {
   const { players, addPlayer, clearPlayers } = usePlayers(type);
   const [name, setName] = React.useState("");
+  React.useEffect(() => {
+    const maybePlayer = window.localStorage.getItem(PLAYER);
+    if (maybePlayer) {
+      setName(maybePlayer);
+    }
+  }, []);
   return (
     <div>
       <Card>
@@ -74,6 +76,7 @@ const Players = ({ type }) => {
         <Button
           onClick={() => {
             addPlayer(name);
+            window.localStorage.setItem(PLAYER, name);
           }}
         >
           mitspielen
